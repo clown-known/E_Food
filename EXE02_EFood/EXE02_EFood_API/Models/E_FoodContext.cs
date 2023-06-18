@@ -28,7 +28,7 @@ namespace EXE02_EFood_API.Models
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<Notify> Notifies { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
-        public virtual DbSet<Premium> Premia { get; set; }
+        public virtual DbSet<Premium> Premium { get; set; }
         public virtual DbSet<PremiumHi> PremiumHis { get; set; }
         public virtual DbSet<Restaurant> Restaurants { get; set; }
         public virtual DbSet<RestaurantManager> RestaurantManagers { get; set; }

@@ -35,12 +35,27 @@ namespace EXE02_EFood_API
                 options.UseSqlServer(Configuration.GetConnectionString("DbConnect")));
             services.AddControllers();
             services.AddScoped<IRestaurantRepository, RestaurantRepositoryImp>();
+            services.AddScoped<IDishCategoryRepository, DishCategoryRepositoryImp>();
+            services.AddScoped<IDishRepository, DishRepositoryImp>();
+            services.AddScoped<ICategoryRepository, CategoryRepositoryImp>();
+            services.AddScoped<IUserRepository, UserRepositoryImp>();
+            services.AddScoped<IPaymentMethodRepository, PaymentMethodRepositoryImp>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EXE02_EFood_API", Version = "v1" });
             });
             //services.AddSwaggerGen();
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +69,7 @@ namespace EXE02_EFood_API
                 //app.UseSwaggerUI();
             }
 
+            app.UseCors();
             app.UseHttpsRedirection();
             
             app.UseRouting();
@@ -64,14 +80,14 @@ namespace EXE02_EFood_API
             {
                 endpoints.MapControllers();
             });
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "RestaurantManagerController",
-                    pattern: "RestaurantManagerController/{action}",
-                    defaults: new { controller = "RestaurantManager", action = "Index" })
-                    ;
-            });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "RestaurantManagerController",
+            //        pattern: "RestaurantManagerController/{action}",
+            //        defaults: new { controller = "RestaurantManager", action = "Index" })
+            //        ;
+            //});
         }
     }
 }

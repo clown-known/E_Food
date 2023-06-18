@@ -7,8 +7,8 @@ namespace EXE02_EFood_API.Models
 {
     public partial class DishCategory
     {
-        public int? CategoryId { get; set; }
-        public int? DishId { get; set; }
+        public int CategoryId { get; set; }
+        public int DishId { get; set; }
         public string Name { get; set; }
         public int? Status { get; set; }
         public bool IsDeleted { get; set; }
