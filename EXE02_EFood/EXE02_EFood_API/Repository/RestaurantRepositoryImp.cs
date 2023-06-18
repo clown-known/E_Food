@@ -43,6 +43,11 @@ namespace EXE02_EFood_API.Repository
             var result = _context.Restaurants.SingleOrDefault(a => a.ResId == id);
             return result;
         }
+        public List<Restaurant> GetAll()
+        {
+            var result = _context.Restaurants.Where(i=>i.IsDeleted!=true).ToList();
+            return result;
+        }
 
         public void Update(Restaurant res)
         {

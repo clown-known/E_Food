@@ -18,7 +18,7 @@ namespace EXE02_EFood_API.Models
         public string Name { get; set; }
         public string District { get; set; }
         public string Address { get; set; }
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
         public int? Price { get; set; }
         public TimeSpan? OpenTime { get; set; }
         public int? VoteRating { get; set; }

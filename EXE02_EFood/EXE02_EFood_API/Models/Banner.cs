@@ -11,7 +11,7 @@ namespace EXE02_EFood_API.Models
         public string Title { get; set; }
         public string Detail { get; set; }
         public int? ResManagerId { get; set; }
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
         public TimeSpan? CreatedTime { get; set; }
         public int? Status { get; set; }
         public bool IsDeleted { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -43,8 +44,16 @@ namespace EXE02_EFood_API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server =(local); database = E_Food;uid=sa;pwd=12345;");
+                optionsBuilder.UseSqlServer(GetConnectionStrings());
             }
+        }
+        public string GetConnectionStrings()
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+            return configuration.GetConnectionString("DbConnect");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -72,18 +81,18 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.ResManager)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.ResManagerId)
-                    .HasConstraintName("FK__Account__Res_man__214BF109");
+                    .HasConstraintName("FK__Account__Res_man__3429BB53");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Account__User_id__2057CCD0");
+                    .HasConstraintName("FK__Account__User_id__3335971A");
             });
 
             modelBuilder.Entity<AccountPayment>(entity =>
             {
                 entity.HasKey(e => e.UserPaymentId)
-                    .HasName("PK__Account___9622D49FD9D7D379");
+                    .HasName("PK__Account___9622D49FDA3567A2");
 
                 entity.ToTable("Account_payment");
 
@@ -98,18 +107,18 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.AccountPayments)
                     .HasForeignKey(d => d.AccountId)
-                    .HasConstraintName("FK__Account_p__Accou__24285DB4");
+                    .HasConstraintName("FK__Account_p__Accou__370627FE");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.AccountPayments)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK__Account_p__Payme__251C81ED");
+                    .HasConstraintName("FK__Account_p__Payme__37FA4C37");
             });
 
             modelBuilder.Entity<ActiveCode>(entity =>
             {
                 entity.HasKey(e => e.ActiveId)
-                    .HasName("PK__ActiveCo__DDEC27591C89D814");
+                    .HasName("PK__ActiveCo__DDEC27594CF10C0E");
 
                 entity.ToTable("ActiveCode");
 
@@ -117,7 +126,7 @@ namespace EXE02_EFood_API.Models
 
                 entity.Property(e => e.Code)
                     .IsRequired()
-                    .HasMaxLength(1)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Email)
@@ -136,7 +145,7 @@ namespace EXE02_EFood_API.Models
 
                 entity.Property(e => e.Detail).HasMaxLength(150);
 
-                entity.Property(e => e.Image).HasColumnType("image");
+                entity.Property(e => e.Image).HasMaxLength(150);
 
                 entity.Property(e => e.IsDeleted).HasColumnName("Is_deleted");
 
@@ -147,7 +156,7 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.ResManager)
                     .WithMany(p => p.Banners)
                     .HasForeignKey(d => d.ResManagerId)
-                    .HasConstraintName("FK__Banner__Res_mana__27F8EE98");
+                    .HasConstraintName("FK__Banner__Res_mana__3AD6B8E2");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -175,7 +184,7 @@ namespace EXE02_EFood_API.Models
 
                 entity.Property(e => e.Description).HasMaxLength(150);
 
-                entity.Property(e => e.Image).HasColumnType("image");
+                entity.Property(e => e.Image).HasMaxLength(150);
 
                 entity.Property(e => e.IsDeleted).HasColumnName("Is_deleted");
 
@@ -201,12 +210,12 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Category)
                     .WithMany()
                     .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__Dish_cate__Categ__29E1370A");
+                    .HasConstraintName("FK__Dish_cate__Categ__3CBF0154");
 
                 entity.HasOne(d => d.Dish)
                     .WithMany()
                     .HasForeignKey(d => d.DishId)
-                    .HasConstraintName("FK__Dish_cate__Dish___2AD55B43");
+                    .HasConstraintName("FK__Dish_cate__Dish___3DB3258D");
             });
 
             modelBuilder.Entity<Menu>(entity =>
@@ -224,12 +233,12 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Dish)
                     .WithMany()
                     .HasForeignKey(d => d.DishId)
-                    .HasConstraintName("FK__Menu__Dish_id__2DB1C7EE");
+                    .HasConstraintName("FK__Menu__Dish_id__408F9238");
 
                 entity.HasOne(d => d.Res)
                     .WithMany()
                     .HasForeignKey(d => d.ResId)
-                    .HasConstraintName("FK__Menu__Res_id__2CBDA3B5");
+                    .HasConstraintName("FK__Menu__Res_id__3F9B6DFF");
             });
 
             modelBuilder.Entity<Notify>(entity =>
@@ -251,7 +260,7 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Res)
                     .WithMany(p => p.Notifies)
                     .HasForeignKey(d => d.ResId)
-                    .HasConstraintName("FK__Notify__Res_id__308E3499");
+                    .HasConstraintName("FK__Notify__Res_id__436BFEE3");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
@@ -296,18 +305,18 @@ namespace EXE02_EFood_API.Models
                     .WithMany()
                     .HasForeignKey(d => d.PremiumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Premium_h__Premi__32767D0B");
+                    .HasConstraintName("FK__Premium_h__Premi__45544755");
 
                 entity.HasOne(d => d.User)
                     .WithMany()
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Premium_h__User___336AA144");
+                    .HasConstraintName("FK__Premium_h__User___46486B8E");
             });
 
             modelBuilder.Entity<Restaurant>(entity =>
             {
                 entity.HasKey(e => e.ResId)
-                    .HasName("PK__Restaura__11B830DD82761724");
+                    .HasName("PK__Restaura__11B830DDF1248DCB");
 
                 entity.ToTable("Restaurant");
 
@@ -319,7 +328,7 @@ namespace EXE02_EFood_API.Models
 
                 entity.Property(e => e.District).HasMaxLength(150);
 
-                entity.Property(e => e.Image).HasColumnType("image");
+                entity.Property(e => e.Image).HasMaxLength(150);
 
                 entity.Property(e => e.IsDeleted).HasColumnName("Is_deleted");
 
@@ -337,7 +346,7 @@ namespace EXE02_EFood_API.Models
             modelBuilder.Entity<RestaurantManager>(entity =>
             {
                 entity.HasKey(e => e.ResManagerId)
-                    .HasName("PK__Restaura__D6A097CEDC5248D7");
+                    .HasName("PK__Restaura__D6A097CEC2A312AE");
 
                 entity.ToTable("Restaurant_Manager");
 
@@ -358,13 +367,13 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Res)
                     .WithMany(p => p.RestaurantManagers)
                     .HasForeignKey(d => d.ResId)
-                    .HasConstraintName("FK__Restauran__Res_i__1D7B6025");
+                    .HasConstraintName("FK__Restauran__Res_i__30592A6F");
             });
 
             modelBuilder.Entity<ReviewOfDish>(entity =>
             {
                 entity.HasKey(e => e.ReviewId)
-                    .HasName("PK__ReviewOf__F803F2C32A734445");
+                    .HasName("PK__ReviewOf__F803F2C358A8BF60");
 
                 entity.ToTable("ReviewOfDish");
 
@@ -383,18 +392,18 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Dish)
                     .WithMany(p => p.ReviewOfDishes)
                     .HasForeignKey(d => d.DishId)
-                    .HasConstraintName("FK__ReviewOfD__Dish___373B3228");
+                    .HasConstraintName("FK__ReviewOfD__Dish___4A18FC72");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ReviewOfDishes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ReviewOfD__User___36470DEF");
+                    .HasConstraintName("FK__ReviewOfD__User___4924D839");
             });
 
             modelBuilder.Entity<ReviewOfRe>(entity =>
             {
                 entity.HasKey(e => e.ReviewId)
-                    .HasName("PK__ReviewOf__F803F2C33AE36DD5");
+                    .HasName("PK__ReviewOf__F803F2C3B16EFFDE");
 
                 entity.Property(e => e.ReviewId)
                     .ValueGeneratedNever()
@@ -411,12 +420,12 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Res)
                     .WithMany(p => p.ReviewOfRes)
                     .HasForeignKey(d => d.ResId)
-                    .HasConstraintName("FK__ReviewOfR__Res_i__3B0BC30C");
+                    .HasConstraintName("FK__ReviewOfR__Res_i__4DE98D56");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ReviewOfRes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ReviewOfR__User___3A179ED3");
+                    .HasConstraintName("FK__ReviewOfR__User___4CF5691D");
             });
 
             modelBuilder.Entity<SendNotify>(entity =>
@@ -449,12 +458,12 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.AccountId)
-                    .HasConstraintName("FK__Transacti__Accou__3EDC53F0");
+                    .HasConstraintName("FK__Transacti__Accou__51BA1E3A");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK__Transacti__Payme__3DE82FB7");
+                    .HasConstraintName("FK__Transacti__Payme__50C5FA01");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -463,7 +472,7 @@ namespace EXE02_EFood_API.Models
 
                 entity.Property(e => e.UserId).HasColumnName("User_id");
 
-                entity.Property(e => e.Avatar).HasColumnType("image");
+                entity.Property(e => e.Avatar).HasMaxLength(150);
 
                 entity.Property(e => e.IsDeleted).HasColumnName("Is_deleted");
 
@@ -491,12 +500,12 @@ namespace EXE02_EFood_API.Models
                 entity.HasOne(d => d.Notify)
                     .WithMany()
                     .HasForeignKey(d => d.NotifyId)
-                    .HasConstraintName("FK__UserNotif__Notif__41B8C09B");
+                    .HasConstraintName("FK__UserNotif__Notif__54968AE5");
 
                 entity.HasOne(d => d.User)
                     .WithMany()
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__UserNotif__User___40C49C62");
+                    .HasConstraintName("FK__UserNotif__User___53A266AC");
             });
 
             OnModelCreatingPartial(modelBuilder);

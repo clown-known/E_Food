@@ -64,6 +64,14 @@ namespace EXE02_EFood_API
             {
                 endpoints.MapControllers();
             });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "RestaurantManagerController",
+                    pattern: "RestaurantManagerController/{action}",
+                    defaults: new { controller = "RestaurantManager", action = "Index" })
+                    ;
+            });
         }
     }
 }
