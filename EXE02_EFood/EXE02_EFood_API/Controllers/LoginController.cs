@@ -8,6 +8,10 @@ using System;
 using Microsoft.Extensions.Configuration;
 using EXE02_EFood_API.Models;
 using EXE02_EFood_API.Repository;
+using EXE02_EFood_API.BusinessObject;
+using EXE02_EFood_API.Repository.IRepository;
+using System.Linq;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace EXE02_EFood_API.Controllers
 {
@@ -15,16 +19,25 @@ namespace EXE02_EFood_API.Controllers
     [ApiController]
     public class LoginController : Controller
     {
-        [HttpGet]
-        public IActionResult Login()
+        private readonly IAccountRepository _accountRepository;
+        private readonly IUserRepository _userRepository;
+        public LoginController(IAccountRepository accountRepository, IUserRepository userRepository)
         {
-            return Ok();
+            _accountRepository = accountRepository;
+            _userRepository = userRepository;
         }
+
         [Route("sendOTP")]
         [HttpPost]
         public IActionResult SendOTP(string email)
         {
-            SendActivationEmail(email);
+            if (SendActivationEmail(email) == false)
+            {
+                return BadRequest(new ResponseObject
+                {
+                    Message = "Email alredy exist!"
+                }); 
+            }
             return Ok();
         }
         [Route("tryOTP")]
@@ -39,11 +52,65 @@ namespace EXE02_EFood_API.Controllers
             }
             return Unauthorized();
         }
-
-
-
-        private void SendActivationEmail(string email)
+        [HttpPost]
+        public IActionResult Login(LoginModel model)
         {
+            var acc = _accountRepository.GetAll().Where(a => a.Email.Equals(model.email) && a.Password.Equals(model.password)).FirstOrDefault();
+            if (acc.Status != 1)
+            {
+                return Unauthorized(new ResponseObject
+                {
+                    Message = "Account is banned!"
+                } );
+            }
+            else
+            {
+                acc.Password = "";
+                return Ok(acc);
+            }
+        }
+        [HttpPost]
+        [Route("api/register")]
+        public IActionResult Register(RegisterModel model)
+        {
+            // Check if the email already exists
+            if (_accountRepository.GetByEmail(model.Email)!=null)
+            {
+                return Conflict("An account with the provided email already exists.");
+            }
+
+            // Create a new user
+            var user = new User
+            {
+                Name = model.Name,
+                Avatar = null,
+                Phone = model.Phone,
+                IsPremium = false,
+                Status = 1,
+                IsDeleted = false
+            };
+            _userRepository.Create(user);
+
+            // Create a new account
+            var account = new Account
+            {
+                Email = model.Email,
+                Password = model.Password,
+                Status = 1,
+                Role = "user",
+                UserId = user.UserId
+            };
+            _accountRepository.Create(account);
+            return Ok("Account registered successfully.");
+        }
+
+
+        private bool SendActivationEmail(string email)
+        {
+            if (_accountRepository.GetByEmail(email) != null)
+            {
+                return false;
+            }
             // gen code, update to database
             Random random = new Random();
             string rdn = "";
@@ -72,6 +139,7 @@ namespace EXE02_EFood_API.Controllers
                 smtp.Port = 587;
                 smtp.Send(mm);
             }
+            return true;
         }
     }
 }

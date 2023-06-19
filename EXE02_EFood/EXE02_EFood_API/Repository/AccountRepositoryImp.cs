@@ -34,6 +34,11 @@ namespace EXE02_EFood_API.Repository
             var result = _context.Accounts.SingleOrDefault(a=>a.AccountId == id);
             return result;
         }
+        public Account GetByEmail(string email)
+        {
+            var result = _context.Accounts.SingleOrDefault(a=>a.Email.Equals(email));
+            return result;
+        }
 
         public void Update(Account account)
         {
