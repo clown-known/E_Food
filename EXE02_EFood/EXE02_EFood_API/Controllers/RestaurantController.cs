@@ -17,70 +17,59 @@ namespace EXE02_EFood_API.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantRepository _restaurantRepository;
-        private readonly IMapper _mapper;
 
-        public RestaurantController(IRestaurantRepository restaurantRepository, IMapper mapper)
+        public RestaurantController(IRestaurantRepository restaurantRepository)
         {
             _restaurantRepository = restaurantRepository;
-            _mapper = mapper;
         }
 
-        // GET: api/Restaurant
         [HttpGet]
-        public ActionResult<IEnumerable<Restaurant>> GetAll()
+        public IActionResult GetAllRestaurants()
         {
-            return _restaurantRepository.GetAll();
+            var restaurants = _restaurantRepository.GetAll();
+            return Ok(restaurants);
         }
 
-        // GET: api/Restaurant/5
         [HttpGet("{id}")]
-        public ActionResult<Restaurant> Get(int id)
+        public IActionResult GetRestaurant(int id)
         {
-            var restaurant =  _restaurantRepository.Get(id);
-
+            var restaurant = _restaurantRepository.Get(id);
             if (restaurant == null)
             {
                 return NotFound();
             }
-
-            return restaurant;
+            return Ok(restaurant);
         }
 
-        // PUT: api/Restaurant/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public IActionResult CreateRestaurant(Restaurant restaurant)
+        {
+            _restaurantRepository.Create(restaurant);
+            return CreatedAtAction(nameof(GetRestaurant), new { id = restaurant.ResId }, restaurant);
+        }
+
         [HttpPut("{id}")]
-        public ActionResult UpdateRestaurant(int id, RestaurantApiModel restaurantDto)
+        public IActionResult UpdateRestaurant(int id, Restaurant restaurant)
         {
             var existingRestaurant = _restaurantRepository.Get(id);
-
             if (existingRestaurant == null)
             {
                 return NotFound();
             }
 
-            // Ánh xạ dữ liệu từ restaurantDto vào existingRestaurant
-            _mapper.Map(restaurantDto, existingRestaurant);
+            existingRestaurant.Name = restaurant.Name;
+            existingRestaurant.Address = restaurant.Address;
+            // Tiếp tục ánh xạ các thuộc tính khác của restaurant vào existingRestaurant
 
             _restaurantRepository.Update(existingRestaurant);
 
-            return Ok(existingRestaurant);
+            return NoContent();
         }
 
-        // POST: api/Restaurant
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public ActionResult PostRestaurant(RestaurantApiModel restaurant)
-        {
-            var res = _mapper.Map<Restaurant>(restaurant);
-            _restaurantRepository.Create(res);
-            return CreatedAtAction(nameof(Get), new { id = res.ResId}, res);
-        }
-
-        // DELETE: api/Restaurant/5
         [HttpDelete("{id}")]
         public IActionResult DeleteRestaurant(int id)
         {
-            var restaurant =  _restaurantRepository.Get(id);
+            var restaurant = _restaurantRepository.Get(id);
             if (restaurant == null)
             {
                 return NotFound();
@@ -89,12 +78,6 @@ namespace EXE02_EFood_API.Controllers
             _restaurantRepository.Delete(id);
 
             return NoContent();
-        }
-
-        private bool RestaurantExists(int id)
-        {
-            var restaurant = _restaurantRepository.Get(id);
-            return restaurant != null;
         }
     }
 }
