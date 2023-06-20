@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 
+
 namespace EXE02_EFood_API
 {
     public class Startup
@@ -35,6 +36,7 @@ namespace EXE02_EFood_API
                 options.UseSqlServer(Configuration.GetConnectionString("DbConnect")));
             services.AddControllers();
             services.AddScoped<IRestaurantRepository, RestaurantRepositoryImp>();
+            services.AddScoped<IAccountRepository, AccountRepositoryImp>();
             services.AddScoped<IDishCategoryRepository, DishCategoryRepositoryImp>();
             services.AddScoped<IDishRepository, DishRepositoryImp>();
             services.AddScoped<ICategoryRepository, CategoryRepositoryImp>();
@@ -42,10 +44,15 @@ namespace EXE02_EFood_API
             services.AddScoped<IPaymentMethodRepository, PaymentMethodRepositoryImp>();
             services.AddScoped<IMenuRepository, MenuRepositoryImp>();
             services.AddScoped<IReviewOfResRepo, ReviewOfResRepoImp>();
+            services.AddScoped<IRestaurantManagerRepository, RestaurantManagerRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EXE02_EFood_API", Version = "v1" });
             });
+            //services.Configure<WebEncoderOptions>(options =>
+            //{
+            //    options.UrlEncoding = false;
+            //});
             //services.AddSwaggerGen();
             services.AddAutoMapper(typeof(Startup));
 
@@ -63,13 +70,11 @@ namespace EXE02_EFood_API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EXE02_EFood_API v1"));
-                //app.UseSwaggerUI();
-            }
+                app.UseSwaggerUI();
 
             app.UseCors();
             app.UseHttpsRedirection();

@@ -37,6 +37,11 @@ namespace EXE02_EFood_API.Repository
             var user = _context.Users.SingleOrDefault(u => u.UserId == id);
             return user;
         }
+        public User GetByPhone(string phone)
+        {
+            var user = _context.Users.SingleOrDefault(u => u.Phone.Equals(phone));
+            return user;
+        }
 
         public List<User> GetAll()
         {

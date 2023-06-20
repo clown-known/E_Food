@@ -6,7 +6,7 @@ namespace EXE02_EFood_API.Repository.IRepository
     public interface IMenuRepository
     {
         public Menu Create(Menu menu);
-        public int GetDishes(int resId);
+        public List<int> GetDishes(int resId);
         public int GetRes(int dishId);
         public void Delete(Menu menu);
     }

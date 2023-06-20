@@ -10,5 +10,6 @@ namespace EXE02_EFood_API.Repository.IRepository
         public List<User> GetAll();
         public void Update(User user);
         public void Delete(int id);
+        public User GetByPhone(string phone);
     }
 }

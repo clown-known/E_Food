@@ -17,10 +17,14 @@ namespace EXE02_EFood_API.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IMenuRepository _menuRepository;
+        private readonly IDishRepository _dishRepository;
 
-        public RestaurantController(IRestaurantRepository restaurantRepository)
+        public RestaurantController(IRestaurantRepository restaurantRepository,IMenuRepository menuRepository,IDishRepository dishRepository)
         {
             _restaurantRepository = restaurantRepository;
+            _menuRepository = menuRepository;
+            _dishRepository = dishRepository;
         }
 
         [HttpGet]
@@ -39,6 +43,25 @@ namespace EXE02_EFood_API.Controllers
                 return NotFound();
             }
             return Ok(restaurant);
+        }
+
+        [HttpGet("app/{id}")]
+        public IActionResult GetRestaurantapp(int id)
+        {
+            var restaurant = _restaurantRepository.Get(id);
+            if (restaurant == null)
+            {
+                return NotFound();
+            }
+            var menu = _menuRepository.GetDishes(id);
+            ResdetailApiModel resdetail = new ResdetailApiModel();
+            foreach (int item in menu)
+            {
+                var dish = _dishRepository.Get(item);
+                resdetail.dishList.Add(dish);
+            }
+            resdetail.resInfor = restaurant;
+            return Ok(resdetail);
         }
 
         [HttpPost]

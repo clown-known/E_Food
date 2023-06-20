@@ -29,12 +29,12 @@ namespace EXE02_EFood_API.Repository
             return newMenu;
         }
 
-        public int GetDishes(int resId)
+        public List<int> GetDishes(int resId)
         {
             var dishIds = _context.Menus
                 .Where(m => m.ResId == resId && !m.IsDeleted)
                 .Select(m => m.DishId)
-                .FirstOrDefault();
+                .ToList();
 
             return dishIds;
         }

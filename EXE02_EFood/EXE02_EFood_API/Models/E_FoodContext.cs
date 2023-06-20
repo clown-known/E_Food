@@ -507,6 +507,10 @@ namespace EXE02_EFood_API.Models
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK__UserNotif__User___53A266AC");
             });
+            modelBuilder.Entity<User>()
+                .Ignore(e => e.Accounts);
+            modelBuilder.Entity<RestaurantManager>()
+                .Ignore(e => e.Accounts);
 
             OnModelCreatingPartial(modelBuilder);
         }
