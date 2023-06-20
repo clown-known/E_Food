@@ -1,5 +1,6 @@
 ﻿using EXE02_EFood_API.Models;
 using EXE02_EFood_API.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,6 +60,11 @@ namespace EXE02_EFood_API.Repository
                 _context.Menus.Remove(existingMenu);
                 _context.SaveChanges();
             }
+        }
+
+        public List<Menu> GetMenuItemsByRestaurantId(int resId)
+        {
+            return _context.Set<Menu>().Where(m => m.ResId == resId).ToList();
         }
     }
 
