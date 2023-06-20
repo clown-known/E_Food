@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Dj8O1EHVDY4s9yXP7/8psgpiTXhK6g6ajqCjr/wwBSr8LK+Q0AZ9b3YsrlnjE5OVFFn0h1mjIF1WlMfJ49oaOA==",
+  "dgSpecHash": "9X4p6+Ot4ZARsFJmsz8qxisP4jiQFOXracLbdiPXUx08RbGcu1eFgl59mAlTccTjdMlAeVA3479OHoEYP9rxLA==",
   "success": true,
-  "projectFilePath": "D:\\.Net2\\EFood_git\\E_Food\\EXE02_EFood\\EXE02_EFood_API\\EXE02_EFood_API.csproj",
+  "projectFilePath": "D:\\LEARNING C#\\EXECoding\\EXE02_EFood\\EXE02_EFood_API\\EXE02_EFood_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
