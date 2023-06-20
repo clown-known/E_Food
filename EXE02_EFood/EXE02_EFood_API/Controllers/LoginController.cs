@@ -21,16 +21,19 @@ namespace EXE02_EFood_API.Controllers
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IUserRepository _userRepository;
-        public LoginController(IAccountRepository accountRepository, IUserRepository userRepository)
+        private readonly IRestaurantManagerRepository _restaurantManagerRepository;
+        public LoginController(IAccountRepository accountRepository, IUserRepository userRepository,IRestaurantManagerRepository restaurantManagerRepository)
         {
             _accountRepository = accountRepository;
             _userRepository = userRepository;
+            _restaurantManagerRepository = restaurantManagerRepository;
         }
 
         [Route("sendOTP")]
         [HttpPost]
         public IActionResult SendOTP(string email)
         {
+            email = email.Replace("%40", "@");
             if (SendActivationEmail(email) == false)
             {
                 return BadRequest(new ResponseObject
@@ -44,6 +47,7 @@ namespace EXE02_EFood_API.Controllers
         [HttpPost]
         public IActionResult CheckOTP(string email,string otp)
         {
+            email = email.Replace("%40", "@");
             ActiveCodeRepositoryImp repo = new ActiveCodeRepositoryImp();
             string code = repo.GetActiveCode(email);
             if(code != null && code.Equals(otp))
@@ -66,6 +70,15 @@ namespace EXE02_EFood_API.Controllers
             else
             {
                 acc.Password = "";
+                if (acc.Role.Equals("user")&&acc.UserId!=null)
+                {
+                    var uinf = _userRepository.Get(acc.UserId.Value);
+                    acc.User = uinf;
+                }else if (acc.Role.Equals("manager"))
+                {
+                    var rinf = _restaurantManagerRepository.Get(acc.ResManagerId.Value);
+                    acc.ResManager = rinf;
+                }
                 return Ok(acc);
             }
         }
@@ -90,7 +103,7 @@ namespace EXE02_EFood_API.Controllers
                 IsDeleted = false
             };
             _userRepository.Create(user);
-
+            user = _userRepository.GetByPhone(model.Phone);
             // Create a new account
             var account = new Account
             {
