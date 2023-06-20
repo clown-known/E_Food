@@ -41,7 +41,8 @@ namespace EXE02_EFood_API
             services.AddScoped<IUserRepository, UserRepositoryImp>();
             services.AddScoped<IPaymentMethodRepository, PaymentMethodRepositoryImp>();
             services.AddScoped<IMenuRepository, MenuRepositoryImp>();
-            services.AddScoped<IReviewOfResRepo, ReviewOfResRepoImp>();
+            services.AddScoped<IReviewOfDishRepository, ReviewOfDishRepositoryImp>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EXE02_EFood_API", Version = "v1" });
